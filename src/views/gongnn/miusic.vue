@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="paixu">
-      <div class="leibei">All</div>
+      <div class="leibei" @click="nandus">{{difficultys2[dif]}}</div>
       <div class="avgb30">PPT:9.56</div>
-      <div class="shengjian" @click="gai_shengjian">{{sj?'升序':'降序'}}</div>
+      <div class="shengjian" @click="gai_shengjian">{{!sj?'升序':'降序'}}</div>
     </div>
     <div class="poi" v-if="poit">
-        <div>获取数据中{{poit}}</div>
+      <div>获取数据中{{poit}}</div>
     </div>
     <div class="list_bbox" v-if="!poit">
-      <div class="list_box" v-for="(i) in constants" :key="i.name">
+      <div class="list_box" v-for="(i) in constants" :key="i.name" v-show="i.def==dif||dif==3">
         <div class="list_title">
           <div class="songname">{{i.name}}</div>
           <div class="pmppt">{{i.ppt}}</div>
@@ -22,11 +22,13 @@
 export default {
   data() {
     return {
-        poit:false,
+      poit: false,
       constants: null,
       songlist: null,
       sj: true,
-      difficultys: ["PST", "PRS", "FTR", "BYN"]
+      difficultys: ["PST", "PRS", "FTR", "BYN"],
+      difficultys2: [ "PST", "PRS", "FTR","All"],
+      dif: 0,
     };
   },
   mounted() {
@@ -34,7 +36,7 @@ export default {
       if (!window.scroesppt) {
         let ppp = this;
         window.running = true;
-        this.poit =true
+        this.poit = true;
         let ws = new WebSocket("wss://arc.estertion.win:616");
         ws.onerror = function(e) {
           console.log(e);
@@ -58,14 +60,15 @@ export default {
                 for (let j in data.data[i]) {
                   ppp.constants.push({
                     name: i + ":" + ppp.difficultys[j],
-                    ppt: data.data[i][j]
+                    ppt: data.data[i][j],
+                    def: j
                   });
                 }
               ppp.constants.sort(function(i, j) {
                 return i.ppt - j.ppt;
               });
-              window.scroesppt= ppp.constants
-            //   console.log(ppp.constants);
+              window.scroesppt = ppp.constants;
+              //   console.log(ppp.constants);
             }
           }
         };
@@ -76,14 +79,18 @@ export default {
         ws.onclose = function() {
           console.log("结束通信");
           window.running = false;
-          ppp.poit =false;
+          ppp.poit = false;
         };
-      }else{
-          this.constants=window.scroesppt
+      } else {
+        this.constants = window.scroesppt;
       }
     });
   },
   methods: {
+    nandus() {
+        this.dif++;
+        this.dif=this.dif%4;
+    },
     gai_shengjian() {
       if (this.sj) {
         this.constants.sort(function(i, j) {
@@ -145,11 +152,11 @@ div {
 .pmppt {
   float: right;
 }
-.poi{
-    width: 100%;
-    height: 464px;
-    display: flex;
-    justify-content: center;
-    align-items: center
+.poi {
+  width: 100%;
+  height: 464px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -11,7 +11,7 @@
           <div class="name fl">{{uersinfo.name}}</div>
           <div class="uid fl">uid:&nbsp;{{uersinfo.user_code}}</div>
         </div>
-        <div class="ppt">PPT:&nbsp;{{(uersinfo.rating/100).toFixed(2)}}</div>
+        <div class="ppt">PPT:&nbsp;{{(uersinfo.rating/100).toFixed(2)}}&nbsp;/B30:&nbsp;{{AVG30}}&nbsp;/R10:&nbsp;{{R10}}</div>
         <div class="aocai">创建时间:{{getDateString(uersinfo.join_date)}}</div>
       </div>
     </div>
@@ -30,14 +30,30 @@
 export default {
   data() {
     return {
-      uersinfo: null
-    };
+      uersinfo: null,
+     scores:null,
+     AVG30:0,
+    R10:0
+};
   },
   created() {
     // console.log(window.scroes)
-    
-      this.uersinfo = window.userinfo;
-    
+    let AVG30=0;
+    this.uersinfo = window.userinfo;
+    this.scores=window.scroes;
+    this.scores.sort(function(i, j) {
+      return j.rating > i.rating?1:-1;
+    });
+    console.log(this.scores)
+    for(var j=0 ;j<30&&j<this.scores.length;j++){
+      AVG30+=this.scores[j].rating
+      console.log(j,AVG30)
+    }
+    AVG30=AVG30/j.toFixed(2)
+    this.AVG30=AVG30.toFixed(2)
+    this.R10=((this.uersinfo.rating / 100 * 40 - AVG30 * j) / 10).toFixed(2)
+    console.log('aaa',j,AVG30)
+    console.log(((this.uersinfo.rating/100).toFixed(2)*1+AVG30)/2)
   },
   methods: {
     getDateString(date) {

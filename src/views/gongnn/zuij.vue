@@ -53,7 +53,7 @@ export default {
         this.score.slice(-6, -3),
         this.score.slice(-3)
       ].join(",");
-      console.log(this.score);
+      // console.log(this.score);
 
       window.Highcharts.chart(
         "songjilv",
