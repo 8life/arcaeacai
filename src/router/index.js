@@ -41,13 +41,19 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  console.log(to);
-  if(to.path =='/yonghu'){
-    if(!window.userinfo){
+  if(window.debug){
+    console.log(to);
+    console.log(from);
+  }
+  if(to.path =='/yonghu'||to.path =='/yonghu/zuij'||to.path =='/yonghu/best30'){
+    
+    // console.log(Vue.$store.getters.getuserinfo);
+    if(!window.sessionStorage.userinfo){
+      console.log(222)
       next({ path: '/' })
     }
   }
-  console.log(from);
+  
  next();
 })
 

@@ -2,13 +2,13 @@
   <div>
     <div class="paixu">
       <div class="leibei" @click="gai_zhonglei">{{lei[zhonglei]}}</div>
-      <div class="avgb30">PPT:9.56</div>
+      <div class="avgb30">B30:{{AVG30}}</div>
       <div class="shengjian" @click="gai_paixu">{{paixu==0?'升序':'降序'}}</div>
     </div>
     <div class="list_bbox">
       <div
         class="list_box"
-        v-for="(i,j) in scores"
+        v-for="(i,j) in scroes"
         :key="i.song_id+i.difficulty"
         @click="shengclie(i.song_id+i.difficulty)"
       >
@@ -37,7 +37,7 @@
 export default {
   data() {
     return {
-      scores: null,
+      scroes: null,
       paixu: 0,
       zhonglei: 0,
       lei: ["PPT", "分数", "日期"],
@@ -48,19 +48,32 @@ export default {
         "Pure Memory",
         "Easy Clear",
         "Hard Clear"
-      ]
+      ],
+      AVG30:null,
+
     };
   },
   beforeMount() {
-  
-      this.scores = window.scroes;
-    
-    // console.log(this.scores)
+    // this.scores = window.scroes;
+    // console.log(this.$store.getters.getscroes);
+    // this.scores=this.$store.getters.getscroes;
+    // this.scroes = JSON.parse(window.sessionStorage.scroes);
+    // console.log(window.sessionStorage.scroes)
+    this.scroes = JSON.parse(window.sessionStorage.scroes);
 
-    this.scores.sort(function(i, j) {
-      return i.rating - j.rating;
+    // console.log('111',this.scroes)
+
+        this.scroes.sort(function(i, j) {
+      return j.rating > i.rating ? 1 : -1;
     });
-    console.log(this.scores);
+    let AVG30=0;
+     for (var j = 0; j < 30 && j < this.scroes.length; j++) {
+      AVG30 += this.scroes[j].rating;
+      // console.log(j,AVG30)
+    }
+    AVG30 = AVG30 / j.toFixed(2);
+    this.AVG30 = AVG30.toFixed(2);
+    // console.log(this.scores);
   },
   methods: {
     scros_fn(i) {
@@ -120,11 +133,11 @@ export default {
           //   console.log(this.paixu);
 
           if (this.paixu == 0) {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return i.rating - j.rating;
             });
           } else {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return j.rating - i.rating;
             });
           }
@@ -134,11 +147,11 @@ export default {
           //   console.log(this.paixu);
 
           if (this.paixu == 0) {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return i.score - j.score;
             });
           } else {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return j.score - i.score;
             });
           }
@@ -148,11 +161,11 @@ export default {
           //   console.log(this.paixu);
 
           if (this.paixu == 0) {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return i.time_played - j.time_played;
             });
           } else {
-            this.scores = this.scores.sort(function(i, j) {
+            this.scroes = this.scroes.sort(function(i, j) {
               return j.time_played - i.time_played;
             });
           }
@@ -162,9 +175,9 @@ export default {
     },
     shengclie(ming) {
       let aobj = null;
-      for (let i in this.scores) {
-        if (this.scores[i].song_id == ming.slice(0, ming.length - 1)) {
-          aobj = this.scores[i];
+      for (let i in this.scroes) {
+        if (this.scroes[i].song_id == ming.slice(0, ming.length - 1)) {
+          aobj = this.scroes[i];
           //   console.log(aobj);
           break;
         }

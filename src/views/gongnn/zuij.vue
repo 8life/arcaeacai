@@ -26,9 +26,16 @@ export default {
       score: null
     };
   },
+  created(){
+    // console.log(this.$store.getters.getuserinfo)
+  },
   mounted() {
     this.$nextTick(function() {
-      let infodata = window.userinfo;
+      // let infodata = window.userinfo;
+      // let infodata = this.$store.getters.getuserinfo; 
+      // console.log(window.sessionStorage.userinfo );
+      let infodata =JSON.parse(window.sessionStorage.userinfo)    
+      // console.log(infodata)
       infodata.rating_records.forEach(i => {
         this.xAxis_ppt.push(i[0].slice(2, 4) + "/" + i[0].slice(4));
         this.data_ppt.push(Number(i[1]) / 100);

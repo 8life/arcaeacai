@@ -11,11 +11,13 @@
           <div class="name fl">{{uersinfo.name}}</div>
           <div class="uid fl">uid:&nbsp;{{uersinfo.user_code}}</div>
         </div>
-        <div class="ppt">PPT:&nbsp;{{(uersinfo.rating/100).toFixed(2)}}&nbsp;/B30:&nbsp;{{AVG30}}&nbsp;/R10:&nbsp;{{R10}}</div>
+        <div
+          class="ppt"
+        >PPT:&nbsp;{{(uersinfo.rating/100).toFixed(2)}}&nbsp;/B30:&nbsp;{{AVG30}}&nbsp;/R10:&nbsp;{{R10}}</div>
         <div class="aocai">创建时间:{{getDateString(uersinfo.join_date)}}</div>
       </div>
     </div>
-    <div class="shuoming">这里是一些文字说明</div>
+    <div ref="shuoming" class="shuoming">这里是一些文字说明</div>
     <div class="router_box">
       <router-link to="/yonghu/zuij">最近记录</router-link>|
       <router-link class="link-zhong" to="/yonghu/best30">B30</router-link>|
@@ -31,29 +33,35 @@ export default {
   data() {
     return {
       uersinfo: null,
-     scores:null,
-     AVG30:0,
-    R10:0
-};
+      scroes: null,
+      AVG30: 0,
+      R10: 0
+    };
   },
   created() {
-    // console.log(window.scroes)
-    let AVG30=0;
-    this.uersinfo = window.userinfo;
-    this.scores=window.scroes;
-    this.scores.sort(function(i, j) {
-      return j.rating > i.rating?1:-1;
+    // console.log(this.$store.getters.getuserinfo)
+    let AVG30 = 0;
+
+    // this.uersinfo = window.userinfo;
+    // this.scores = window.scroes;
+    this.uersinfo = JSON.parse(window.sessionStorage.userinfo);
+    this.scroes = JSON.parse(window.sessionStorage.scroes);
+   
+    this.scroes.sort(function(i, j) {
+      return j.rating > i.rating ? 1 : -1;
     });
-    console.log(this.scores)
-    for(var j=0 ;j<30&&j<this.scores.length;j++){
-      AVG30+=this.scores[j].rating
-      console.log(j,AVG30)
+    // console.log(this.scroes)
+    for (var j = 0; j < 30 && j < this.scroes.length; j++) {
+      AVG30 += this.scroes[j].rating;
+      // console.log(j,AVG30)
     }
-    AVG30=AVG30/j.toFixed(2)
-    this.AVG30=AVG30.toFixed(2)
-    this.R10=((this.uersinfo.rating / 100 * 40 - AVG30 * j) / 10).toFixed(2)
-    console.log('aaa',j,AVG30)
-    console.log(((this.uersinfo.rating/100).toFixed(2)*1+AVG30)/2)
+    AVG30 = AVG30 / j.toFixed(2);
+    this.AVG30 = AVG30.toFixed(2);
+    this.R10 = (((this.uersinfo.rating / 100) * 40 - AVG30 * j) / 10).toFixed(
+      2
+    );
+    // console.log('aaa',j,AVG30)
+    // console.log(((this.uersinfo.rating/100).toFixed(2)*1+AVG30)/2)
   },
   methods: {
     getDateString(date) {
@@ -72,6 +80,22 @@ export default {
         ].join(":")
       );
     }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (to.path == "/yonghu/zuij") {
+      console.log(from);
+      this.$refs.shuoming.innerHTML = "感谢esterTion提供的api,只用于学习";
+    }
+    if (to.path == "/yonghu/best30") {
+      this.$refs.shuoming.innerHTML =
+        "这里显示你最好的" + this.scroes.length + "张谱子";
+    }
+    if (to.path == "/yonghu/miusic") {
+      this.$refs.shuoming.innerHTML =
+        "你的B30为" + this.AVG30 + "可以找相近的铺子提升哦";
+    }
+
+    next();
   }
 };
 //https://redive.estertion.win/arcaea/backstage/icons/16_icon.png
@@ -127,6 +151,7 @@ export default {
   font-size: 10px;
   line-height: 28px;
   text-align: left;
+  color: #efeff4;
 }
 .router_box {
   box-sizing: border-box;

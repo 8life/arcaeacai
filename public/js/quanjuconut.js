@@ -1,4 +1,5 @@
 //判断是否在握手状态
+var debug=false;
 var running = false
 var lang = 'zh'
 var userinfo = null;

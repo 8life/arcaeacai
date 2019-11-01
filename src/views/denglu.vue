@@ -1,7 +1,7 @@
 <template>
   <div class="denglu">
     <div class="denglu_box">
-      <h2>请输入好友码</h2>
+      <h2>Arcaea查分器</h2>
       <input type="text" ref="haoyouma" @keydown="huichu($event)" name="haoyouma" />
       <button @click="caixun">查询</button>
       <div ref="tis">这里是提示</div>
@@ -28,6 +28,7 @@ export default {
     caixun() {
       let massage = this.$refs.tis;
       let ppp = this;
+      // console.log( this.$store.getters.doneTodos)
       //poi
       // for(window.poiqq=2;window.poiqq<window.s.length;window.poiqq++){
       //   window.s[window.poiqq].data.forEach(function(i){
@@ -36,11 +37,13 @@ export default {
       //   window.scores = Object.values(window.scoresObj);
       // }
 
-      console.log("oooo", this.$refs.haoyouma.value);
+      // console.log("oooo", this.$refs.haoyouma.value);
       window.scoresObj = {};
       window.scroes = [];
       window.userinfo = {};
       window.songtitle = {};
+      
+
       //判断是否在网络握手中
       if (window.running) return;
       let code = this.$refs.haoyouma.value.replace(/[^\d]/g, "").substr(0, 9);
@@ -53,7 +56,7 @@ export default {
       //准备网络链接
       window.running = true;
       let ws = new WebSocket("wss://arc.estertion.win:616");
-      console.log("1");
+      // console.log("1");
       //链接出错的时候
       ws.onerror = function(e) {
         console.log(e);
@@ -116,13 +119,13 @@ export default {
       ws.binaryType = "arraybuffer";
       //开始链接
       ws.onopen = function() {
-        console.log("开始链接");
+        // console.log("开始链接");
         ws.send(cmd.join(" "));
         massage.textContent = window._t("Request sent", window.lang);
       };
       //结束的时候
       ws.onclose = function() {
-        console.log("结束通信");
+        // console.log("结束通信");
         if (window.running) {
           massage.textContent = window._t("Completed", window.lang);
           window.running = false;
@@ -134,6 +137,16 @@ export default {
           console.log(window.scroes);
           console.log(window.userinfo);
           console.log(window.songtitle);
+          
+          ppp.$store.commit('setscroes',{data:window.scroes})
+          ppp.$store.commit('setuserinfo',{data:window.userinfo})
+          ppp.$store.commit('setsongtitle',{data:window.songtitle})
+
+          window.sessionStorage.setItem("scroes",JSON.stringify(window.scroes));
+          window.sessionStorage.setItem("userinfo",JSON.stringify(window.userinfo));
+          window.sessionStorage.setItem("songtitle",JSON.stringify(window.songtitle));
+
+          
           ppp.$router.push({ path: "yonghu/zuij" });
         }
       };
@@ -148,7 +161,8 @@ export default {
         this.caixun();
       }
     }
-  }
+  },
+  
 };
 </script>
 <style scoped>
@@ -157,11 +171,27 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  vertical-align: middle;
 }
 .denglu_box {
-  border: 1px solid red;
-  width: 200px;
-  height: 200px;
-  flex: 0;
+  /* border: 1px solid red; */
+  /* width: 200px; */
+  flex: 0 0 150px;
+}
+.denglu_box>input{
+  width: 150px;
+  border-radius: 5px;
+  padding: 0 5px;
+  font-size: 20px;
+  margin: 10px 0 50px 0;
+}
+.denglu_box>button{
+  width: 70%;
+  text-align: center;
+  border-style:none;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color:#fff; 
+  margin-bottom: 50px; 
 }
 </style>
